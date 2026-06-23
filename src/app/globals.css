@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --border-color: rgba(153, 27, 27, 0.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular;
+
+  /* Inverted Charcoal for backgrounds */
+  --color-charcoal-dark: #f8fafc;
+  --color-charcoal: #ffffff;
+  --color-charcoal-light: #f1f5f9;
+  
+  --color-crimson: #991b1b;
+  --color-crimson-light: #dc2626;
+  --color-crimson-bright: #ef4444;
+  
+  --color-gold: #92400e;
+  --color-gold-light: #b45309;
+  --color-gold-bright: #d97706;
+
+  /* Invert Neutrals used for backgrounds and texts */
+  --color-neutral-100: #0f172a;
+  --color-neutral-200: #1e293b;
+  --color-neutral-300: #475569;
+  --color-neutral-350: #3f4e61;
+  --color-neutral-400: #334155;
+  --color-neutral-500: #64748b;
+  --color-neutral-800: #cbd5e1;
+  --color-neutral-850: #e2e8f0;
+  --color-neutral-900: #f1f5f9;
+  --color-neutral-950: #ffffff;
+
+  /* Darken pastel colors for light mode contrast */
+  --color-emerald-300: #047857;
+  --color-emerald-400: #059669;
+  --color-red-300: #b91c1c;
+  --color-red-400: #dc2626;
+
+  /* Invert White to Dark Slate for normal text */
+  --color-white: #0f172a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Preserve actual white color inside colored backgrounds */
+.bg-crimson, .bg-crimson-light, .from-crimson, .bg-gradient-to-br, .bg-gradient-to-r,
+.bg-gold, .bg-gold-light, .bg-gold-bright, .bg-emerald-500, .bg-red-500 {
+  --color-white: #ffffff;
+}
+
+.text-white {
+  color: var(--color-white);
+}
+
+/* Custom Scrollbar for Sleek Light theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #991b1b;
+}
+
+/* Glassmorphism custom classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(153, 27, 27, 0.1);
+}
+
+.glass-panel-heavy {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(153, 27, 27, 0.2);
+}
+
+/* Custom fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
