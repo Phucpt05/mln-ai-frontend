@@ -10,13 +10,15 @@ import {
   Layers,
   Home,
   UploadCloud,
-  Globe
+  Globe,
+  BookMarked
 } from "lucide-react";
 
 // --- Components ---
 import TabHome from "@/components/TabHome";
 import TabCaseStudy from "@/components/TabCaseStudy";
 import TabTheory from "@/components/TabTheory";
+import TabSummary from "@/components/TabSummary";
 import TabAnalysis from "@/components/TabAnalysis";
 import TabLesson from "@/components/TabLesson";
 import TabQuiz from "@/components/TabQuiz";
@@ -55,8 +57,8 @@ export default function PresentationApp() {
 
   // --- Global slide navigation state ---
   // SLIDE_COUNTS[i] = number of slides in tab i (1 = single-page, no SlideLayout)
-  const SLIDE_COUNTS = [1, 1, 7, 4, 3, 1];
-  const [slideIndices, setSlideIndices] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const SLIDE_COUNTS = [1, 1, 7, 4, 3, 1, 8];
+  const [slideIndices, setSlideIndices] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
   // Health State
   const [isBackendHealthy, setIsBackendHealthy] = useState<boolean | null>(null);
@@ -264,6 +266,7 @@ export default function PresentationApp() {
     { label: "Phân tích", icon: TrendingUp },
     { label: "Bài học", icon: Layers },
     { label: "Luyện tập (Quiz)", icon: Award },
+    { label: "Tổng hợp chương 3", icon: BookMarked },
   ];
 
   return (
@@ -370,7 +373,7 @@ export default function PresentationApp() {
               onPrev={() => navigateGlobal("prev")}
               onGoTo={(idx) => goToSlide(3, idx)}
               globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
-              globalNextDisabled={activeTab === 5 && slideIndices[5] === SLIDE_COUNTS[5] - 1}
+              globalNextDisabled={activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1}
             />
           )}
           {activeTab === 4 && (
@@ -380,7 +383,7 @@ export default function PresentationApp() {
               onPrev={() => navigateGlobal("prev")}
               onGoTo={(idx) => goToSlide(4, idx)}
               globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
-              globalNextDisabled={activeTab === 5 && slideIndices[5] === SLIDE_COUNTS[5] - 1}
+              globalNextDisabled={activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1}
             />
           )}
           {activeTab === 5 && (
@@ -393,6 +396,16 @@ export default function PresentationApp() {
               onGenerateAIQuestions={handleGenerateAIQuestions}
               isGenerating={isGeneratingQuiz}
               documentUsed={quizDocUsed}
+            />
+          )}
+          {activeTab === 6 && (
+            <TabSummary
+              currentSlide={slideIndices[6]}
+              onNext={() => navigateGlobal("next")}
+              onPrev={() => navigateGlobal("prev")}
+              onGoTo={(idx) => goToSlide(6, idx)}
+              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
+              globalNextDisabled={activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1}
             />
           )}
         </div>
