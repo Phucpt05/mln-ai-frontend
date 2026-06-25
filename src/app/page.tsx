@@ -9,8 +9,6 @@ import {
   Award,
   Layers,
   Home,
-  UploadCloud,
-  Globe
 } from "lucide-react";
 
 // --- Components ---
@@ -41,6 +39,29 @@ interface QuizQuestion {
   options: string[];
   correctIndex: number;
   explanations: string[];
+}
+
+interface ChatResponse {
+  answer: string;
+  session_id?: string;
+  sources?: SourceChunk[];
+}
+
+interface GeneratedQuestionResponse {
+  id: string;
+  question: string;
+  options: string[];
+  correct_index: number;
+  explanations: string[];
+}
+
+interface GenerateQuestionsResponse {
+  questions: GeneratedQuestionResponse[];
+  document_used?: string;
+}
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
 }
 
 export default function PresentationApp() {
@@ -76,7 +97,7 @@ export default function PresentationApp() {
         } else {
           setIsBackendHealthy(false);
         }
-      } catch (err) {
+      } catch {
         setIsBackendHealthy(false);
       }
     };
@@ -99,7 +120,7 @@ export default function PresentationApp() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [activeTab]);
 
   // Quick prompt click handler
   const handleQuickPrompt = (promptText: string) => {
@@ -135,7 +156,7 @@ export default function PresentationApp() {
         throw new Error(`Server error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as ChatResponse;
       if (data.session_id) {
         setSessionId(data.session_id);
       }
@@ -144,8 +165,8 @@ export default function PresentationApp() {
         ...newMessages,
         { role: "assistant" as const, content: data.answer, sources: data.sources }
       ]);
-    } catch (err: any) {
-      console.error("Chat backend connection error:", err.message || err);
+    } catch (err: unknown) {
+      console.error("Chat backend connection error:", getErrorMessage(err));
       setChatMessages([
         ...newMessages,
         {
@@ -172,10 +193,10 @@ export default function PresentationApp() {
       if (!response.ok) {
         throw new Error("Không thể sinh câu hỏi từ Backend.");
       }
-      const data = await response.json();
+      const data = (await response.json()) as GenerateQuestionsResponse;
 
       // Parse response to fit UI schema
-      const formatted: QuizQuestion[] = data.questions.map((q: any) => ({
+      const formatted: QuizQuestion[] = data.questions.map((q) => ({
         id: q.id,
         question: q.question,
         options: q.options,
@@ -184,8 +205,8 @@ export default function PresentationApp() {
       }));
       setQuizQuestions(formatted);
       setQuizDocUsed(data.document_used || "Tài liệu hệ thống");
-    } catch (err: any) {
-      console.error("Quiz backend connection error:", err.message || err);
+    } catch (err: unknown) {
+      console.error("Quiz backend connection error:", getErrorMessage(err));
       alert("❌ Lỗi: Không thể tải câu hỏi từ Backend AI. Hãy chắc chắn rằng bạn đã upload tài liệu giáo trình vào backend trước.");
     } finally {
       setIsGeneratingQuiz(false);
@@ -219,7 +240,7 @@ export default function PresentationApp() {
     { label: "Tình huống", icon: Building2 },
     { label: "Lý thuyết", icon: BookOpen },
     { label: "Phân tích", icon: TrendingUp },
-    { label: "Bài học", icon: Layers },
+    { label: "Bài học & Kết luận", icon: Layers },
     { label: "Luyện tập (Quiz)", icon: Award },
   ];
 
@@ -305,7 +326,7 @@ export default function PresentationApp() {
       </header>
 
       {/* FULL-PAGE DIRECT CONTENT (NO OUTER CARD FRAME) */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 md:py-12 flex flex-col justify-center animate-fade-in">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 md:py-12 flex flex-col justify-center animate-fade-in">
         <div className="w-full">
           {activeTab === 0 && <TabHome onNext={() => setActiveTab(1)} />}
           {activeTab === 1 && <TabCaseStudy />}

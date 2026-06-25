@@ -87,9 +87,9 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
         document_id: data.document_id,
       });
       setFile(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setErrorMsg(err.message || "Đã xảy ra lỗi khi kết nối với Backend.");
+      setErrorMsg(err instanceof Error ? err.message : "Đã xảy ra lỗi khi kết nối với Backend.");
     } finally {
       setIsUploading(false);
     }

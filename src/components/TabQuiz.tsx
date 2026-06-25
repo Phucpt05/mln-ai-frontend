@@ -327,7 +327,7 @@ export default function TabQuiz({
                 <label className="text-xs text-neutral-400 font-semibold">Mức độ khó của câu hỏi:</label>
                 <select
                   value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value as any)}
+                  onChange={(e) => setDifficulty(e.target.value as "easy" | "medium" | "hard")}
                   className="w-full bg-neutral-900 border border-neutral-850 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-crimson/50 cursor-pointer"
                 >
                   <option value="easy">Độ khó: Dễ</option>
