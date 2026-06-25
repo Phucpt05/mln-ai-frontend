@@ -353,16 +353,22 @@ export default function PresentationApp() {
       {/* FULL-PAGE DIRECT CONTENT (NO OUTER CARD FRAME) */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 md:py-12 flex flex-col justify-center animate-fade-in">
         <div className="w-full">
-          {activeTab === 0 && <TabHome onNext={() => navigateGlobal("next")} />}
-          {activeTab === 1 && <TabCaseStudy />}
+          {(() => {
+            const isGlobalPrevDisabled = activeTab === 0 && slideIndices[0] === 0;
+            const isGlobalNextDisabled = activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1;
+
+            return (
+              <>
+                {activeTab === 0 && <TabHome onNext={() => navigateGlobal("next")} />}
+                {activeTab === 1 && <TabCaseStudy />}
           {activeTab === 2 && (
             <TabTheory
               currentSlide={slideIndices[2]}
               onNext={() => navigateGlobal("next")}
               onPrev={() => navigateGlobal("prev")}
               onGoTo={(idx) => goToSlide(2, idx)}
-              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
-              globalNextDisabled={activeTab === 5 && slideIndices[5] === SLIDE_COUNTS[5] - 1}
+              globalPrevDisabled={isGlobalPrevDisabled}
+              globalNextDisabled={isGlobalNextDisabled}
             />
           )}
           {activeTab === 3 && (
@@ -372,8 +378,8 @@ export default function PresentationApp() {
               onNext={() => navigateGlobal("next")}
               onPrev={() => navigateGlobal("prev")}
               onGoTo={(idx) => goToSlide(3, idx)}
-              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
-              globalNextDisabled={activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1}
+              globalPrevDisabled={isGlobalPrevDisabled}
+              globalNextDisabled={isGlobalNextDisabled}
             />
           )}
           {activeTab === 4 && (
@@ -382,8 +388,8 @@ export default function PresentationApp() {
               onNext={() => navigateGlobal("next")}
               onPrev={() => navigateGlobal("prev")}
               onGoTo={(idx) => goToSlide(4, idx)}
-              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
-              globalNextDisabled={activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1}
+              globalPrevDisabled={isGlobalPrevDisabled}
+              globalNextDisabled={isGlobalNextDisabled}
             />
           )}
           {activeTab === 5 && (
@@ -404,10 +410,13 @@ export default function PresentationApp() {
               onNext={() => navigateGlobal("next")}
               onPrev={() => navigateGlobal("prev")}
               onGoTo={(idx) => goToSlide(6, idx)}
-              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
-              globalNextDisabled={activeTab === 6 && slideIndices[6] === SLIDE_COUNTS[6] - 1}
+              globalPrevDisabled={isGlobalPrevDisabled}
+              globalNextDisabled={isGlobalNextDisabled}
             />
           )}
+              </>
+            );
+          })()}
         </div>
       </main>
 
