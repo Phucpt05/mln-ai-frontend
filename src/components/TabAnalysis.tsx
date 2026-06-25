@@ -10,8 +10,12 @@ interface TabAnalysisProps extends SlideNavProps {
   onQuickPrompt: (text: string) => void;
 }
 
+interface AnalysisSlideProps {
+  onQuickPrompt: (text: string) => void;
+}
+
 // ---- SLIDE 1: Hình thái kẹt ----
-function Slide1Frozen({ onQuickPrompt }: TabAnalysisProps) {
+function Slide1Frozen({ onQuickPrompt }: AnalysisSlideProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2.5 text-crimson-bright border-b border-neutral-900 pb-4">
@@ -76,7 +80,7 @@ function Slide1Frozen({ onQuickPrompt }: TabAnalysisProps) {
 }
 
 // ---- SLIDE 2: Không gian (All-in) ----
-function Slide2Space({ onQuickPrompt }: TabAnalysisProps) {
+function Slide2Space({ onQuickPrompt }: AnalysisSlideProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2.5 text-gold-bright border-b border-neutral-900 pb-4">
@@ -150,7 +154,7 @@ function Slide2Space({ onQuickPrompt }: TabAnalysisProps) {
 }
 
 // ---- SLIDE 3: Thời gian ----
-function Slide3Time({ onQuickPrompt }: TabAnalysisProps) {
+function Slide3Time({ onQuickPrompt }: AnalysisSlideProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2.5 text-blue-400 border-b border-neutral-900 pb-4">
@@ -222,7 +226,7 @@ function Slide3Time({ onQuickPrompt }: TabAnalysisProps) {
 }
 
 // ---- SLIDE 4: Giải pháp ----
-function Slide4Solution({ onQuickPrompt }: TabAnalysisProps) {
+function Slide4Solution({ onQuickPrompt }: AnalysisSlideProps) {
   return (
     <div className="space-y-6">
       <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">
