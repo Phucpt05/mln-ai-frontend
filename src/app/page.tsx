@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   BookOpen,
   Sparkles,
@@ -53,6 +53,11 @@ export default function PresentationApp() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isChatLoading, setIsChatLoading] = useState(false);
 
+  // --- Global slide navigation state ---
+  // SLIDE_COUNTS[i] = number of slides in tab i (1 = single-page, no SlideLayout)
+  const SLIDE_COUNTS = [1, 1, 7, 4, 3, 1];
+  const [slideIndices, setSlideIndices] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+
   // Health State
   const [isBackendHealthy, setIsBackendHealthy] = useState<boolean | null>(null);
 
@@ -85,21 +90,59 @@ export default function PresentationApp() {
     return () => clearInterval(interval);
   }, []);
 
-  // Key navigation for tabs
+  // --- Global navigation: moves slides + auto-switches tabs ---
+  const navStateRef = useRef({ activeTab, slideIndices, SLIDE_COUNTS });
+  useEffect(() => {
+    navStateRef.current = { activeTab, slideIndices, SLIDE_COUNTS };
+  });
+
+  const navigateGlobal = useCallback((direction: "next" | "prev") => {
+    const { activeTab: tab, slideIndices: slides, SLIDE_COUNTS: counts } = navStateRef.current;
+    const curSlide = slides[tab];
+    const maxSlide = counts[tab] - 1;
+    const newSlides = [...slides];
+
+    if (direction === "next") {
+      if (curSlide < maxSlide) {
+        newSlides[tab] = curSlide + 1;
+        setSlideIndices(newSlides);
+      } else if (tab < counts.length - 1) {
+        newSlides[tab + 1] = 0;
+        setSlideIndices(newSlides);
+        setActiveTab(tab + 1);
+      }
+    } else {
+      if (curSlide > 0) {
+        newSlides[tab] = curSlide - 1;
+        setSlideIndices(newSlides);
+      } else if (tab > 0) {
+        newSlides[tab - 1] = counts[tab - 1] - 1;
+        setSlideIndices(newSlides);
+        setActiveTab(tab - 1);
+      }
+    }
+  }, []);
+
+  const goToSlide = useCallback((tabIdx: number, slideIdx: number) => {
+    setSlideIndices(prev => {
+      const next = [...prev];
+      next[tabIdx] = slideIdx;
+      return next;
+    });
+  }, []);
+
+  // Arrow key handler — plain ← → (no Ctrl needed anymore)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA") {
-        return; // Don't trigger tab change when typing in chat
-      }
-      if (e.key === "ArrowRight") {
-        setActiveTab((prev) => (prev < 5 ? prev + 1 : prev));
-      } else if (e.key === "ArrowLeft") {
-        setActiveTab((prev) => (prev > 0 ? prev - 1 : prev));
-      }
+      const tag = (document.activeElement as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.key === "ArrowRight") navigateGlobal("next");
+      if (e.key === "ArrowLeft") navigateGlobal("prev");
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [navigateGlobal]);
+
 
   // Quick prompt click handler
   const handleQuickPrompt = (promptText: string) => {
@@ -307,11 +350,39 @@ export default function PresentationApp() {
       {/* FULL-PAGE DIRECT CONTENT (NO OUTER CARD FRAME) */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 md:py-12 flex flex-col justify-center animate-fade-in">
         <div className="w-full">
-          {activeTab === 0 && <TabHome onNext={() => setActiveTab(1)} />}
+          {activeTab === 0 && <TabHome onNext={() => navigateGlobal("next")} />}
           {activeTab === 1 && <TabCaseStudy />}
-          {activeTab === 2 && <TabTheory />}
-          {activeTab === 3 && <TabAnalysis onQuickPrompt={handleQuickPrompt} />}
-          {activeTab === 4 && <TabLesson />}
+          {activeTab === 2 && (
+            <TabTheory
+              currentSlide={slideIndices[2]}
+              onNext={() => navigateGlobal("next")}
+              onPrev={() => navigateGlobal("prev")}
+              onGoTo={(idx) => goToSlide(2, idx)}
+              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
+              globalNextDisabled={activeTab === 5 && slideIndices[5] === SLIDE_COUNTS[5] - 1}
+            />
+          )}
+          {activeTab === 3 && (
+            <TabAnalysis
+              onQuickPrompt={handleQuickPrompt}
+              currentSlide={slideIndices[3]}
+              onNext={() => navigateGlobal("next")}
+              onPrev={() => navigateGlobal("prev")}
+              onGoTo={(idx) => goToSlide(3, idx)}
+              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
+              globalNextDisabled={activeTab === 5 && slideIndices[5] === SLIDE_COUNTS[5] - 1}
+            />
+          )}
+          {activeTab === 4 && (
+            <TabLesson
+              currentSlide={slideIndices[4]}
+              onNext={() => navigateGlobal("next")}
+              onPrev={() => navigateGlobal("prev")}
+              onGoTo={(idx) => goToSlide(4, idx)}
+              globalPrevDisabled={activeTab === 0 && slideIndices[0] === 0}
+              globalNextDisabled={activeTab === 5 && slideIndices[5] === SLIDE_COUNTS[5] - 1}
+            />
+          )}
           {activeTab === 5 && (
             <TabQuiz
               quizQuestions={quizQuestions}

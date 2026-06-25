@@ -14,7 +14,7 @@ export default function TabHome({ onNext }: TabHomeProps) {
         <Layers className="h-3.5 w-3.5" />
         Bài Thuyết Trình Tương Tác
       </div>
-      <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-white">
+      <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-neutral-100">
         LÝ LUẬN CỦA C. MÁC VỀ <br />
         <span className="bg-gradient-to-r from-crimson via-crimson-bright to-gold bg-clip-text text-transparent">
           TUẦN HOÀN TƯ BẢN
@@ -26,7 +26,7 @@ export default function TabHome({ onNext }: TabHomeProps) {
       <div className="pt-6">
         <button 
           onClick={onNext}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-crimson to-crimson-light text-white text-sm font-semibold rounded-xl hover:from-crimson-light hover:to-crimson-bright transition-all duration-300 shadow-lg shadow-crimson/30 hover:scale-105 cursor-pointer"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-crimson to-crimson-light text-neutral-950 text-sm font-semibold rounded-xl hover:from-crimson-light hover:to-crimson-bright transition-all duration-300 shadow-lg shadow-crimson/30 hover:scale-105 cursor-pointer" style={{color: '#fff'}}
         >
           <span>Khám phá Case Study</span>
           <ChevronRight className="h-4.5 w-4.5" />

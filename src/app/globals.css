@@ -54,15 +54,23 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Preserve actual white color inside colored backgrounds */
-.bg-crimson, .bg-crimson-light, .from-crimson, .bg-gradient-to-br, .bg-gradient-to-r,
-.bg-gold, .bg-gold-light, .bg-gold-bright, .bg-emerald-500, .bg-red-500 {
-  --color-white: #ffffff;
-}
-
+/* Force text-white to always be DARK in light mode — never actual #fff on text */
 .text-white {
   color: var(--color-white);
 }
+
+/* Fix: bg-gradient exception shouldn't bleed into text */
+.from-crimson .text-white,
+.from-crimson-light .text-white,
+.bg-crimson .text-white {
+  color: #ffffff !important;
+}
+
+/* Fix blue-300 text — too light in light mode, remap to readable dark blue */
+.text-blue-300 {
+  color: #1e40af !important;
+}
+
 
 /* Custom Scrollbar for Sleek Light theme */
 ::-webkit-scrollbar {
@@ -109,4 +117,34 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
